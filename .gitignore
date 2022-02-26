@@ -9,6 +9,7 @@ __pycache__/
 
 # Distribution / packaging
 data/
+.vs/
 .Python
 build/
 develop-eggs/
