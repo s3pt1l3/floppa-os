@@ -27,20 +27,40 @@ typedef struct {
 	void* glyphBuffer;
 } PSF1_FONT;
 
+// TODO: add string formatting!!!!!!
+/// <summary>
+/// Basic console output with status checking
+/// </summary>
+EFI_STATUS WriteLine(CHAR16* Line, EFI_SYSTEM_TABLE* SystemTable) {
+	EFI_STATUS Status;
+
+	Status = SystemTable->ConOut->OutputString(SystemTable->ConOut, Line);
+	if (EFI_ERROR(Status)) {
+		return Status; //If printing failed, return
+	}
+
+	Status = SystemTable->ConIn->Reset(SystemTable->ConIn, FALSE); // Empty the Console Input Buffer
+	if (EFI_ERROR(Status)) {
+		return Status;
+	}
+
+	return Status;
+}
+
 Framebuffer framebuffer;
-Framebuffer* InitializeGOP() {
+Framebuffer* InitializeGOP(EFI_SYSTEM_TABLE* SystemTable) {
 	EFI_GUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* gop;
 	EFI_STATUS status;
 
 	status = uefi_call_wrapper(BS->LocateProtocol, 3, &gopGuid, NULL, (void**)&gop);
 	if (EFI_ERROR(status)) {
-		Print(L"Unable to locate GOP\n\r");
+		WriteLine(L"Unable to locate GOP\n\r", SystemTable);
 		return NULL;
 	}
 	else
 	{
-		Print(L"GOP located\n\r");
+		WriteLine(L"GOP located\n\r", SystemTable);
 	}
 
 	framebuffer.BaseAddress = (void*)gop->Mode->FrameBufferBase;
@@ -65,14 +85,18 @@ EFI_FILE* LoadFile(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EF
 		FileSystem->OpenVolume(FileSystem, &Directory);
 	}
 
-	EFI_STATUS s = Directory->Open(Directory, &LoadedFile, Path, EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY);
-	if (s != EFI_SUCCESS) {
+	EFI_STATUS Status = Directory->Open(Directory, &LoadedFile, Path, EFI_FILE_MODE_READ, EFI_FILE_READ_ONLY);
+	if (Status != EFI_SUCCESS) {
 		return NULL;
 	}
 	return LoadedFile;
 
 }
 
+
+/// <summary>
+/// 
+/// </summary>
 PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {
 	EFI_FILE* font = LoadFile(Directory, Path, ImageHandle, SystemTable);
@@ -105,26 +129,6 @@ PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandl
 	finishedFont->glyphBuffer = glyphBuffer;
 	return finishedFont;
 
-}
-
-
-/// <summary>
-/// Basic console output with status checking
-/// </summary>
-EFI_STATUS WriteLine(CHAR16* Line, EFI_SYSTEM_TABLE* SystemTable) {
-	EFI_STATUS Status;
-
-	Status = SystemTable->ConOut->OutputString(SystemTable->ConOut, Line);
-	if (EFI_ERROR(Status)) {
-		return Status; //If printing failed, return
-	}
-
-	Status = SystemTable->ConIn->Reset(SystemTable->ConIn, FALSE); // Empty the Console Input Buffer
-	if (EFI_ERROR(Status)) {
-		return Status;
-	}
-	
-	return Status;
 }
 
 /// <summary>
@@ -227,25 +231,25 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 	}
 
-	Print(L"Kernel loaded\n\r");
+	WriteLine(L"Kernel loaded\n\r", SystemTable);
 
 	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)()) header.e_entry);
 
 	PSF1_FONT* newFont = LoadPSF1Font(NULL, L"zap-light16.psf", ImageHandle, SystemTable);
 	if (newFont == NULL) {
-		Print(L"Font is not valid or is not found\n\r");
+		WriteLine(L"Font is not valid or is not found\n\r", SystemTable);
 	}
 	else
 	{
-		Print(L"Font found. char size = %d\n\r", newFont->psf1_Header->charsize);
+		Print(L"Font found. char size = %d\n\r", newFont->psf1_Header->charsize); // Workaround, replace with WriteLine
 	}
-	Framebuffer* newBuffer = InitializeGOP();
+	Framebuffer* newBuffer = InitializeGOP(SystemTable);
 	Print(L"Base: 0x%x\n\rSize: 0x%x\n\rWidth: %d\n\rHeight: %d\n\rPixelsPerScanline: %d\n\r",
 		newBuffer->BaseAddress,
 		newBuffer->BufferSize,
 		newBuffer->Width,
 		newBuffer->Height,
-		newBuffer->PixelsPerScanLine);
+		newBuffer->PixelsPerScanLine); // Workaround, replace with WriteLine
 
 	KernelStart(newBuffer, newFont);
 
