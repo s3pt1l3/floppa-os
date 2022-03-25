@@ -140,3 +140,9 @@ dmypy.json
 cython_debug/
 
 *.img
+
+# OS Compile files 
+*.efi
+*.o
+*.elf
+*.fd
