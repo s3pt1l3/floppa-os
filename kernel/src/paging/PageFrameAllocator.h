@@ -1,8 +1,8 @@
 #pragma once
-#include "efiMemory.h"
+#include "../efiMemory.h"
 #include <stdint.h>
-#include "Bitmap.h"
-#include "memory.h"
+#include "../Bitmap.h"
+#include "../memory.h"
 
 class PageFrameAllocator {
 public:
@@ -24,3 +24,5 @@ private:
     void UnreservePage(void* address);
     void UnreservePages(void* address, uint64_t pageCount);
 };
+
+extern PageFrameAllocator GlobalAllocator;

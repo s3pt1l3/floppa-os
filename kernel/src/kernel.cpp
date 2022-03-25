@@ -5,7 +5,10 @@
 #include "efiMemory.h"
 #include "memory.h"
 #include "Bitmap.h"
-#include "PageFrameAllocator.h"
+#include "paging/PageFrameAllocator.h"
+#include "paging/PageMapIndexer.h"
+#include "paging/paging.h"
+#include "paging/PageTableManager.h"
 
 struct BootInfo {
     Framebuffer* framebuffer;
@@ -36,19 +39,37 @@ extern "C" void _start(BootInfo* bootInfo) {
     }*/
     BasicRenderer renderer = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
 
-    renderer.CursorPosition = { 0, renderer.CursorPosition.Y + 16 };
-
     uint64_t mMapEntries = bootInfo->mMapSize / bootInfo->mMapDecriptorSize;
     
-    PageFrameAllocator allocator;
-    allocator.ReadEFIMemoryMap(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDecriptorSize);
+    GlobalAllocator = PageFrameAllocator();
+    
+    GlobalAllocator.ReadEFIMemoryMap(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDecriptorSize);
 
     uint64_t kernelSize = (uint64_t)&_KernelEnd - (uint64_t)&_KernelStart;
     uint64_t kernelPages = (uint64_t)kernelSize / 4096 + 1;
 
-    allocator.LockPages(&_KernelStart, kernelPages);
+    GlobalAllocator.LockPages(&_KernelStart, kernelPages);
+    
+    PageTable* PML4 = (PageTable*)GlobalAllocator.RequestPage();
+    memset(PML4, 0, 0x1000);
 
-    renderer.CursorPosition = { 0, renderer.CursorPosition.Y + 16 };
+    PageTableManager pageTableManager = PageTableManager(PML4);
+
+    for (uint64_t t = 0; t < GetMemorySize(bootInfo->mMap, mMapEntries, bootInfo->mMapDecriptorSize); t+=0x1000) {
+        pageTableManager.MapMemory((void*)t, (void*)t);
+    }
+
+    uint64_t fbBase = (uint64_t)bootInfo->framebuffer->BaseAddress;
+    uint64_t fbSize = (uint64_t)bootInfo->framebuffer->BufferSize + 0x1000;
+    for (uint64_t t = fbBase; t < fbBase + fbSize; t += 4096) {
+        pageTableManager.MapMemory((void*)t, (void*)t);
+    }
+
+    asm("mov %0, %%cr3" : : "r" (PML4));
+
+
+    /*
+        renderer.CursorPosition = { 0, renderer.CursorPosition.Y + 16 };
     renderer.Print("Free RAM: ");
     renderer.Print(to_string(allocator.GetFreeRAM() / 1024));
     renderer.Print(" KB ");
@@ -69,6 +90,8 @@ extern "C" void _start(BootInfo* bootInfo) {
         renderer.Print(to_hstring((uint64_t)address));
         renderer.CursorPosition = { 0, renderer.CursorPosition.Y + 16 };
     }
+
+    */
 
     /*
     for (int i = 0; i < mMapEntries; i++) {
