@@ -1,4 +1,5 @@
 #include "kernelUtil.h"
+#include "gdt/gdt.h"
 
 KernelInfo kernelInfo;
 PageTableManager pageTableManager = NULL;
@@ -37,9 +38,15 @@ void PrepareMemory(BootInfo* bootInfo) {
 
 KernelInfo InitializeKernel(BootInfo* bootInfo) {
 
+    GDTDescriptor gdtDescriptor;
+    gdtDescriptor.Size = sizeof(GDT) - 1;
+    gdtDescriptor.Offset = (uint64_t)&DefaultGDT;
+    LoadGDT(&gdtDescriptor);
+
     PrepareMemory(bootInfo);
     // Uncomment following line if rainbow on top of the screen
     // It replaces all pixels on the screen with black
-    // memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
+    memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
+    
     return kernelInfo;
 }
