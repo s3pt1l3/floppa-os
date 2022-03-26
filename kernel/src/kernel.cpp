@@ -4,9 +4,9 @@ extern "C" void _start(BootInfo* bootInfo) {
 
     KernelInfo kernelInfo = InitializeKernel(bootInfo);
     PageTableManager* pageTableManager = kernelInfo.pageTableManager;
-    BasicRenderer renderer = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
 
-    renderer.Print("FloppaOS");
+    GlobalRenderer->Print("FloppaOS");
 
-    while (true); // stops crashing on realhardware
+    asm("int $0x0e");
+    while (true); // stops crashing on real hardware
 }
