@@ -7,6 +7,6 @@ extern "C" void _start(BootInfo* bootInfo) {
 
     GlobalRenderer->Print("FloppaOS");
 
-    asm("int $0x0e");
+    //asm("int $0x0e");
     while (true); // stops crashing on real hardware
 }
