@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stddef.h>
 #include <stdint.h>
 #include "BasicRenderer.h"
 #include "cstr.h"
@@ -11,13 +10,14 @@
 #include "paging/PageMapIndexer.h"
 #include "paging/paging.h"
 #include "paging/PageTableManager.h"
+#include "userinput/mouse.h"
 
 struct BootInfo {
-    Framebuffer* framebuffer;
-    PSF1_FONT* psf1_Font;
-    EFI_MEMORY_DESCRIPTOR* mMap;
-    uint64_t mMapSize;
-    uint64_t mMapDescriptorSize;
+	Framebuffer* framebuffer;
+	PSF1_FONT* psf1_Font;
+	EFI_MEMORY_DESCRIPTOR* mMap;
+	uint64_t mMapSize;
+	uint64_t mMapDescSize;
 };
 
 extern uint64_t _KernelStart;
