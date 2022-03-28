@@ -1,5 +1,4 @@
 #pragma once
-
 #include <stdint.h>
 #include "BasicRenderer.h"
 #include "cstr.h"
@@ -11,6 +10,8 @@
 #include "paging/paging.h"
 #include "paging/PageTableManager.h"
 #include "userinput/mouse.h"
+#include "acpi.h"
+#include "pci.h"
 
 struct BootInfo {
 	Framebuffer* framebuffer;
@@ -18,13 +19,14 @@ struct BootInfo {
 	EFI_MEMORY_DESCRIPTOR* mMap;
 	uint64_t mMapSize;
 	uint64_t mMapDescSize;
+	ACPI::RSDP2* rsdp;
 };
 
 extern uint64_t _KernelStart;
 extern uint64_t _KernelEnd;
 
 struct KernelInfo {
-    PageTableManager* pageTableManager;
+	PageTableManager* pageTableManager;
 };
 
 KernelInfo InitializeKernel(BootInfo* BootInfo);

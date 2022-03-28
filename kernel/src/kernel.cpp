@@ -4,7 +4,10 @@ extern "C" void _start(BootInfo* bootInfo) {
     KernelInfo kernelInfo = InitializeKernel(bootInfo);
     PageTableManager* pageTableManager = kernelInfo.pageTableManager;
 
-    GlobalRenderer->Print("FloppaOS");
+    GlobalRenderer->Print("FloppaOS >");
+
+    GlobalRenderer->Next();
+    GlobalRenderer->Print(to_hstring((uint64_t)bootInfo->rsdp));
 
     while (true) {
         ProcessMousePacket();
