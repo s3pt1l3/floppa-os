@@ -70,6 +70,7 @@ void PrepareACPI(BootInfo* bootInfo) {
     // for (int t = 0; t < 4; t++){
     //     GlobalRenderer->PutChar(mcfg->Header.Signature[t]);
     // }
+        
 
     PCI::EnumeratePCI(mcfg);
 }
