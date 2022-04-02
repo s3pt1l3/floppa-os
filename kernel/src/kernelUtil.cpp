@@ -3,6 +3,7 @@
 #include "interrupts/IDT.h"
 #include "interrupts/interrupts.h"
 #include "IO.h"
+#include "memory/heap.h"
 
 KernelInfo kernelInfo;
 
@@ -67,11 +68,6 @@ void PrepareACPI(BootInfo* bootInfo) {
 
     ACPI::MCFGHeader* mcfg = (ACPI::MCFGHeader*)ACPI::FindTable(xsdt, (char*)"MCFG");
 
-    // for (int t = 0; t < 4; t++){
-    //     GlobalRenderer->PutChar(mcfg->Header.Signature[t]);
-    // }
-        
-
     PCI::EnumeratePCI(mcfg);
 }
 
@@ -88,6 +84,8 @@ KernelInfo InitializeKernel(BootInfo* bootInfo) {
     PrepareMemory(bootInfo);
 
     memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
+
+    InitializeHeap((void*)0x0000100000000000, 0x10);
 
     PrepareInterrupts();
 
