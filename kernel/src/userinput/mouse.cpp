@@ -147,20 +147,25 @@ void ProcessMousePacket() {
     GlobalRenderer->DrawOverlayMouseCursor(MousePointer, MousePosition, 0xdb5ac1);
 
     if (MousePacket[0] & PS2Leftbutton) {
+        /*
         uint32_t color = GlobalRenderer->Color;
         GlobalRenderer->Color = 0xfcf2f2;
         GlobalRenderer->PutChar('#', MousePosition.X, MousePosition.Y);
         GlobalRenderer->Color = color;
         // GlobalRenderer->PutChar('#', MousePosition.X, MousePosition.Y);
+        */
+        
     }
     if (MousePacket[0] & PS2Middlebutton) {
 
     }
     if (MousePacket[0] & PS2Rightbutton) {
+        /*
         uint32_t color = GlobalRenderer->Color;
         GlobalRenderer->Color = 0xbf0099;
         GlobalRenderer->PutChar('#', MousePosition.X, MousePosition.Y);
         GlobalRenderer->Color = color;
+        */
     }
 
     MousePacketReady = false;
