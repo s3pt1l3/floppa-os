@@ -9,10 +9,6 @@ extern "C" void _start(BootInfo* bootInfo) {
     GlobalRenderer->Next();
     GlobalRenderer->Print(to_hstring((uint64_t)bootInfo->rsdp));
 
-    while (true) {
-        ProcessMousePacket();
-    }
-
     //asm("int $0x0e");
     while (true); // stops crashing on real hardware
 }
