@@ -4,7 +4,7 @@
 
 extern "C" void _start(BootInfo* bootInfo) {
     KernelInfo kernelInfo = InitializeKernel(bootInfo);
-    PageTableManager* pageTableManager = kernelInfo.pageTableManager;
+    //PageTableManager* pageTableManager = kernelInfo.pageTableManager;
     
     //asm("int $0x0e");
     while (true) {
