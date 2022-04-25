@@ -24,6 +24,7 @@ class BasicRenderer {
 		void PutPix(uint32_t x, uint32_t y, uint32_t color);
 		uint32_t GetPix(uint32_t x, uint32_t y);
 		void ClearMouseCursor(uint8_t* mouseCursor, Point position);
+		void ClearCursorPosition();
 		bool MouseDrawn;
 };
 

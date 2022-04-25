@@ -111,6 +111,11 @@ void BasicRenderer::Next() {
     CursorPosition.Y += 16;
 }
 
+void BasicRenderer::ClearCursorPosition() {
+    CursorPosition.X = 0;
+    CursorPosition.Y = 16;
+}
+
 void BasicRenderer::Print(const char* str)
 {
     char* chr = (char*)str;
