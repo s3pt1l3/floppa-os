@@ -270,10 +270,20 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	UINTN MapSize, MapKey;
 	UINTN DescriptorSize;
 	UINT32 DescriptorVersion;
+
 	{
 		SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
-		SystemTable->BootServices->AllocatePool(EfiLoaderData, MapSize, (void**)&Map);
-		SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
+		while (1) {
+			SystemTable->BootServices->AllocatePool(EfiLoaderData, MapSize, (void**)&Map);
+			SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
+			if (Status == EFI_SUCCESS) {
+				break;
+			}
+			else {
+				SystemTable->BootServices->FreePool(Map);
+			}
+		}
+		
 
 	}
 
