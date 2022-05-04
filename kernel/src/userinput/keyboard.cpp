@@ -1,4 +1,6 @@
 #include "keyboard.h"
+#include "../memory.h"
+#include "../usermode/shell.h"
 
 bool isLeftShiftPressed;
 bool isRightShiftPressed;
@@ -19,9 +21,12 @@ void HandleKeyboard(uint8_t scancode) {
             return;
         case Enter:
             GlobalRenderer->Next();
+            shell->add_char_to_buffer('\0');
+            shell->set_is_command_entered(true);
             return;
         case Spacebar:
             GlobalRenderer->PutChar(' ');
+            shell->add_char_to_buffer(' ');
             return;
         case BackSpace:
             GlobalRenderer->ClearChar();
@@ -32,6 +37,7 @@ void HandleKeyboard(uint8_t scancode) {
 
     if (ascii != 0) {
         GlobalRenderer->PutChar(ascii);
+        shell->add_char_to_buffer(ascii);
     }
 
 }
