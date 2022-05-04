@@ -4,6 +4,8 @@
 #include "usermode/shell.h"
 #include "scheduling/pit/pit.h"
 #include "BasicRenderer.h"
+#include "userinput/keyboard.h"
+
 
 extern "C" void _start(BootInfo* bootInfo) {
     KernelInfo kernelInfo = InitializeKernel(bootInfo);
@@ -13,13 +15,14 @@ extern "C" void _start(BootInfo* bootInfo) {
     GlobalRenderer->Clear();
     GlobalRenderer->ClearCursorPosition();
 
-    Shell *shell = new Shell();
-    shell->print_f("FloppaOS />");
+    
+    shell->clear_buffer();
 
     //asm("int $0x0e");
     while (true) {
-        if (GlobalRenderer->CursorPosition.X == 89) {
-
+        if (shell->is_command_entered()) {
+            shell->print_f("Command entered");
+            shell->handle_command();
         }
         asm("hlt");
     } // stops crashing on real hardware
