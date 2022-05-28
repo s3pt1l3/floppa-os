@@ -17,11 +17,17 @@ namespace QWERTYKeyboard {
         'z', 'x', 'c', 'v',
         'b', 'n', 'm', ',',
         '.', '/',  0 , '*',
-         0 , ' '
+         0 , ' ',  0,   0 ,
+         0 ,  0 ,  0,   0 ,
+         0 ,  0 ,  0,   0 ,
+         0 ,  0 ,  0,   0 ,
+         0 ,  0 , '-',  0 ,
+         0 ,  0 , '+',  0 ,
+
     };
 
     char Translate(uint8_t scancode, bool uppercase) {
-        if (scancode > 58) return 0;
+        if (scancode > 79) return 0;
 
         if (uppercase) {
             return ASCIITable[scancode] - 32;

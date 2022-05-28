@@ -29,6 +29,7 @@ void HandleKeyboard(uint8_t scancode) {
             shell->add_char_to_buffer(' ');
             return;
         case BackSpace:
+            shell->delete_last_sym();
             GlobalRenderer->ClearChar();
             return;
     }
