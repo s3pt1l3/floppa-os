@@ -21,9 +21,9 @@ extern "C" void _start(BootInfo* bootInfo) {
     //asm("int $0x0e");
     while (true) {
         if (shell->is_command_entered()) {
-            shell->print_f("Command entered");
-            shell->handle_command();
-        }
+             shell->print_f("Command entered");
+             shell->handle_command();
+         }
         asm("hlt");
     } // stops crashing on real hardware
 }

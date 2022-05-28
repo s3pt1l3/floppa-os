@@ -2,7 +2,9 @@
 #include "../BasicRenderer.h"
 #include "../userinput/keyboard.h"
 #include "../memory.h"
-
+#include "calculator.h"
+#include "../cstr.h"
+#include <stdint.h>
 
 Shell* shell;
 
@@ -25,6 +27,11 @@ void Shell::clear_buffer() {
 	// memset(Shell::buffer, 0, sizeof(Shell::buffer));
 	Shell::buffer[0] = '\0';
 	Shell::index = 0;
+}
+
+void Shell::delete_last_sym() {
+	Shell::index--;
+	Shell::buffer[Shell::index] = 0;
 }
 
 void Shell::add_char_to_buffer(char chr) {
@@ -53,11 +60,43 @@ void Shell::handle_command() {
 	if (Shell::compare_strings(Shell::buffer, "test") == 0) {
 		Shell::print_f(": command test handled");
 	}
+	
+
+
+	else if (Shell::compare_strings(Shell::buffer, "calc") == 0) {
+		Shell::set_is_command_entered(false);
+		Shell::clear_buffer();
+		shell->print_f("Enter exit to close programm");
+		GlobalRenderer->Next();
+		shell->print_f("FloppaOS Calculator />");
+		while (true) {
+			if (shell->is_command_entered()) {
+				
+				if (Shell::compare_strings(Shell::buffer, "exit") == 0) {
+					break;
+				}
+				shell->print_f("Buffer: ");
+				shell->print_f(Shell::get_buffer());
+				GlobalRenderer->Next();
+
+				int res = Calculator().evaluate(((char*)Shell::buffer));
+				
+				shell->print_f((char*)to_string((int64_t)res));
+				Shell::clear_buffer();
+				Shell::set_is_command_entered(false);
+				GlobalRenderer->Next();
+				
+				shell->print_f("FloppaOS Calculator />");
+			}
+		}
+	}
+	
 	Shell::set_is_command_entered(false);
 	Shell::clear_buffer();
 	GlobalRenderer->Next();
 	shell->print_f("FloppaOS />");
 }
+
 
 int Shell::compare_strings(char a[], char b[])
 {
@@ -88,3 +127,4 @@ int Shell::compare_strings(char a[], char b[])
 			return (a[i] - b[i]);
 	}
 }
+

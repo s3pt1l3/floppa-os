@@ -1,5 +1,6 @@
 #pragma once
 
+
 class Shell {
 	private:
 		char buffer[1024];
@@ -8,6 +9,7 @@ class Shell {
 		void get_command();
 		int compare_strings(char a[], char b[]);
 	public:
+		void delete_last_sym();
 		void set_buffer(char buf[1024]);
 		char* get_buffer();
 		void print_f(char* str);
