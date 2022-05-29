@@ -1,4 +1,4 @@
-#include "kernelUtil.h"
+﻿#include "kernelUtil.h"
 #include "memory/heap.h"
 #include "scheduling/pit/pit.h"
 #include "usermode/shell.h"
@@ -12,16 +12,13 @@ extern "C" void _start(BootInfo* bootInfo) {
     //PageTableManager* pageTableManager = kernelInfo.pageTableManager;
     
     PIT::Sleepd(5);
+    shell->clear_buffer();
     GlobalRenderer->Clear();
     GlobalRenderer->ClearCursorPosition();
-
-    
-    shell->clear_buffer();
 
     //asm("int $0x0e");
     while (true) {
         if (shell->is_command_entered()) {
-             shell->print_f("Command entered");
              shell->handle_command();
          }
         asm("hlt");
