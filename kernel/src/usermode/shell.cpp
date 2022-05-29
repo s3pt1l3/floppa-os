@@ -2,7 +2,7 @@
 #include "../BasicRenderer.h"
 #include "../userinput/keyboard.h"
 #include "../memory.h"
-#include "calculator.h"
+#include "eval.h"
 #include "../cstr.h"
 #include <stdint.h>
 
@@ -78,9 +78,7 @@ void Shell::handle_command() {
 				shell->print_f("Buffer: ");
 				shell->print_f(Shell::get_buffer());
 				GlobalRenderer->Next();
-
-				int res = Calculator().evaluate(((char*)Shell::buffer));
-				
+				int res = eval((char*)Shell::buffer);
 				shell->print_f((char*)to_string((int64_t)res));
 				Shell::clear_buffer();
 				Shell::set_is_command_entered(false);
