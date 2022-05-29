@@ -182,17 +182,8 @@ void Shell::handle_command() {
             shell->print_f("5YYYYYYYY5PP555YYYJJ??7777!!!!!!7777777777???JJJJYYY5Y5PPPPPPGPGGGGPPPGGG#BBGBBGGGGGGGBBBBBGGGBBBBBB");
             GlobalRenderer->Next();
 		}
-        shell->print_f("Device specifications");
-        GlobalRenderer->Next();
         shell->print_f("OS: FloppaOS alpha version");
         GlobalRenderer->Next();
-        shell->print_f("Disk info: NO NAME FAT12");
-        GlobalRenderer->Next();
-        shell->print_f("Intel Corp 6 port SATA Controller [AHCI mode] - Mass Storage Controller - Serial ATA - AHCI 1.0");
-        GlobalRenderer->Next();
-        shell->print_f("Display: Display Conroller - VGA Compatible Controller - VGA Controller");
-        GlobalRenderer->Next();
-        shell->print_f("Intel Corp Express DRAM Controller");
 
 	}
     else if (Shell::compare_strings(Shell::buffer, "help") == 0) {
@@ -202,11 +193,24 @@ void Shell::handle_command() {
         GlobalRenderer->Next();
         shell->print_f("about - Information about system");
         GlobalRenderer->Next();
+        shell->print_f("devices - Information about devices");
+        GlobalRenderer->Next();
     }
     else if (Shell::compare_strings(Shell::buffer, "clear") == 0) {
         Shell::clear_buffer();
         GlobalRenderer->ClearCursorPosition();
         GlobalRenderer->Clear();
+    }
+    else if (Shell::compare_strings(Shell::buffer, "devices") == 0) {
+        shell->print_f("Device specifications");
+        GlobalRenderer->Next();
+        shell->print_f("Disk info: NO NAME FAT12");
+        GlobalRenderer->Next();
+        shell->print_f("Intel Corp 6 port SATA Controller [AHCI mode] - Mass Storage Controller - Serial ATA - AHCI 1.0");
+        GlobalRenderer->Next();
+        shell->print_f("Display: Display Conroller - VGA Compatible Controller - VGA Controller");
+        GlobalRenderer->Next();
+        shell->print_f("Intel Corp Express DRAM Controller");
     }
 	else {
 		shell->print_f("Command not found");
